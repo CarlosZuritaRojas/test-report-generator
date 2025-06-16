@@ -1,6 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TestReportGenerator;
+using TestReportGenerator.Factories;
+using TestReportGenerator.Services.Implementations;
+using TestReportGenerator.Services;
+using TestReportGenerator.Analysis;
+using TestReportGenerator.Parsers;
+using TestReportGenerator.Services.Parsers;
+using TestReportGenerator.Abstractions;
 
 var builder = Host.CreateApplicationBuilder(args);
 var services = builder.Services;
@@ -8,6 +15,15 @@ var services = builder.Services;
 // TODO: This service registration violates Dependency Inversion Principle (DIP)
 // We're registering concrete classes instead of interfaces
 // HINT: Create interfaces for all services and register them properly
+services.AddSingleton<IFileReader, FileReader>();
+services.AddSingleton<IParserFactory, ParserFactory>();
+services.AddSingleton<ITestResultParser, CsvParser>();
+services.AddSingleton<ITestResultParser, JsonParser>();
+services.AddSingleton<ITestResultParser, XmlParser>();
+services.AddSingleton<IReportGenerator, ReportGenerator>();
+services.AddSingleton<ITestAnalyzer, TestAnalyzer>();
+services.AddSingleton<IReportGeneratorCli, ReportGeneratorCli>();
+
 services.AddSingleton<ReportGeneratorCli>();
 
 // TODO: No other services are registered - violates proper DI setup
